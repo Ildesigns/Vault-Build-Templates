@@ -4,7 +4,7 @@
 <H4>Usage</H4>
 <p>
   
-  Include the following in the Main Project File, <i>or any sub project referencing Vault SDK</i>
+  Include the following in the Main Project File, <i>or any sub project referencing Vault SDK</i> <b>(order needs to be respected)</b>
 <ol>
   <li><code>&ltImport Project="$(SolutionDir)BuildConfigs\BuildConfigurations.properties" /&gt</code></li>
   <li><code>&ltImport Project="$(SolutionDir)BuildConfigs\BuildStandard.properties" /&gt</code></li>
