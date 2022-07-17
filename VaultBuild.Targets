@@ -1,0 +1,32 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Defines the Tasks & Targets -->
+  <UsingTask TaskName="SoupSoftware.VCETConfigurator" AssemblyFile="$(SolutionDir)\BuildTools\VCETConfigurator.dll">
+    <!-- Download from https://github.com/Ildesigns/Vault-VCET-Build-Configurator-->
+  </UsingTask>
+  <UsingTask TaskName="SoupSoftware.BuildAssemblyGenerator" AssemblyFile="$(SolutionDir)\BuildTools\BuildAssyGenerator.dll">
+    <!--Download from https://github.com/Ildesigns/Vault-Build-Assembly-Generator-->
+  </UsingTask>
+  <PropertyGroup Label ="Additional Files which Contain the Vault Assembly API version attribute, updated at compile time">
+    <VaultApiVersionFile Condition ="$(MSBuildProjectExtension) == '.vbproj'">VaultApiVersion.vb</VaultApiVersionFile>
+    <VaultApiVersionFile Condition ="$(MSBuildProjectExtension) == '.csproj'">VaultApiVersion.cs</VaultApiVersionFile>
+  </PropertyGroup>
+  <ItemGroup Label="Additional Files which Contain the Vault Assembly API version attribute">
+    <Compile Include="$(VaultApiVersionFile)">
+      <AutoGen>True</AutoGen>
+    </Compile> 
+  </ItemGroup>
+  
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" Condition ="$(MSBuildProjectExtension) == '.vbproj'" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition ="$(MSBuildProjectExtension) == '.csproj'" />
+  
+  <Target Name="messages" BeforeTargets="BeforeBuild">
+    <BuildAssemblyGenerator  FileName="$(ProjectDir)\$(VaultApiVersionFile)" year="$(year)" ContinueOnError="ErrorAndStop" /> 
+    <Message Text="Building with $(year) API" Importance="high"/>
+    <Message Text="Building with Vault APIR from $(AutoDeskSDKSource)" Importance="high"/>
+    <Message Text="Building $(Configuration) ($(year)) for $(Platform)" Importance="high"/>
+    <Message Text="Writing API Version to $(VaultApiVersionFile)" Importance="high"></Message>
+  </Target>
+  <Target Name="VCETRewrite" AfterTargets="AfterBuild">
+    <VCETConfigurator  Path="$(OutputPath)" referencePath="$(AutoDeskSDKSource)\" ContinueOnError="ErrorAndStop"	  />
+  </Target>
+</Project >
